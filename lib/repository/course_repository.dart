@@ -22,7 +22,9 @@ class CourseRepository implements Repository {
 
     final apiResponse = json.decode(response.body);
 
-    print(apiResponse);
+    apiResponse["data"].map((json) {
+      courses.add(Course.fromJson(json));
+    }).toList();
 
     return courses;
   }
