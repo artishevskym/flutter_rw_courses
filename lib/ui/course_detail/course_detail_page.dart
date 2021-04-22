@@ -26,9 +26,13 @@ class CourseDetailPage extends StatelessWidget {
   }
 
   Widget _buildBanner() {
-    return ImageContainer(
-      height: 200,
-      url: course.artworkUrl,
+    return Hero(
+      tag: "cardArtwork-${course.courseId}",
+      transitionOnUserGestures: true,
+      child: ImageContainer(
+        height: 200,
+        url: course.artworkUrl,
+      ),
     );
   }
 
@@ -40,11 +44,7 @@ class CourseDetailPage extends StatelessWidget {
         children: <Widget>[
           Text(
             course.name,
-            style: Theme
-                .of(context)
-                .textTheme
-                .subtitle2
-                .copyWith(fontSize: 24),
+            style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 24),
           ),
           Text(
             course.description,
