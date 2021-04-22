@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rw_courses/model/course.dart';
 import 'package:flutter_rw_courses/repository/course_repository.dart';
+import 'package:flutter_rw_courses/ui/course_detail/course_detail_page.dart';
 import 'package:flutter_rw_courses/ui/courses/courses_controller.dart';
 
 import '../../constants.dart';
@@ -44,10 +45,17 @@ class _CoursesPageState extends State<CoursesPage> {
         subtitle: Text(course.domainString),
         trailing: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
-          child: Image.network(
-            course.artworkUrl
-          ),
+          child: Image.network(course.artworkUrl),
         ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CourseDetailPage(
+                course: course,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
