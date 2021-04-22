@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rw_courses/model/course.dart';
 import 'package:flutter_rw_courses/repository/course_repository.dart';
+import 'package:flutter_rw_courses/state/filter_state_container.dart';
 import 'package:flutter_rw_courses/ui/course_detail/course_detail_page.dart';
 import 'package:flutter_rw_courses/ui/courses/courses_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../constants.dart';
 
 class CoursesPage extends StatefulWidget {
   @override
@@ -14,29 +12,23 @@ class CoursesPage extends StatefulWidget {
 
 class _CoursesPageState extends State<CoursesPage> {
   final _controller = CoursesController(CourseRepository());
-  int _filterValue = Constants.allFilter;
+  FilterState state;
+
 
   @override
-  void initState() {
-    super.initState();
-
-    _loadValue();
-  }
-
-  _loadValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _filterValue = prefs.getInt(Constants.filterKey);
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    state = FilterStateContainer.of(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Course>>(
-      future: _controller.fetchCourses(_filterValue),
+      future: _controller.fetchCourses(state.filterValue),
       builder: (context, snapshot) {
         var courses = snapshot.data;
-        if (courses == null) {
+        if (courses == null ||
+        snapshot.connectionState != ConnectionState.done) {
           return Center(child: CircularProgressIndicator());
         }
         return ListView.builder(

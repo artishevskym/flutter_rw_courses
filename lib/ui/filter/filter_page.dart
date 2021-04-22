@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rw_courses/state/filter_state_container.dart';
 import 'package:flutter_rw_courses/ui/filter/filter_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import '../../strings.dart';
@@ -11,21 +11,13 @@ class FilterPage extends StatefulWidget {
 }
 
 class _FilterPageState extends State<FilterPage> {
-  int _filterValue = Constants.allFilter;
+  FilterState state;
 
 
   @override
-  void initState() {
-    super.initState();
-
-    _loadValue();
-  }
-
-  _loadValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _filterValue = prefs.getInt(Constants.filterKey);
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    state = FilterStateContainer.of(context);
   }
 
   @override
@@ -36,61 +28,57 @@ class _FilterPageState extends State<FilterPage> {
       ),
       body: Container(
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              FilterWidget(
-                value: Constants.iosFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.ios,
-              ),
-              FilterWidget(
-                value: Constants.androidFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.android,
-              ),
-              FilterWidget(
-                value: Constants.flutterFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.flutter,
-              ),
-              FilterWidget(
-                value: Constants.sssFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.sss,
-              ),
-              FilterWidget(
-                value: Constants.unityFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.unity,
-              ),
-              FilterWidget(
-                value: Constants.macOsFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.macOS,
-              ),
-              FilterWidget(
-                value: Constants.allFilter,
-                groupValue: _filterValue,
-                onChanged: _handleRadioValueChange,
-                text: Strings.all,
-              ),
-            ],
-          ),
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            FilterWidget(
+              value: Constants.iosFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.ios,
+            ),
+            FilterWidget(
+              value: Constants.androidFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.android,
+            ),
+            FilterWidget(
+              value: Constants.flutterFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.flutter,
+            ),
+            FilterWidget(
+              value: Constants.sssFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.sss,
+            ),
+            FilterWidget(
+              value: Constants.unityFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.unity,
+            ),
+            FilterWidget(
+              value: Constants.macOsFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.macOS,
+            ),
+            FilterWidget(
+              value: Constants.allFilter,
+              groupValue: state.filterValue,
+              onChanged: _handleRadioValueChange,
+              text: Strings.all,
+            ),
+          ],
         ),
+      ),
     );
   }
 
   void _handleRadioValueChange(int value) async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _filterValue = value;
-      prefs.setInt(Constants.filterKey, _filterValue);
-    });
+    state.updateFilterValue(value);
   }
 }
